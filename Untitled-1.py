@@ -41,23 +41,34 @@ def sorting(list1,min,max,sorting_type):
 
 list1 = []              #숫자 들어갈 리스트.
 minercheck = False      #배열에 들어갈 값이 음수인지 판단하기 위한 변수
-
+findcheck = False
 while 1:
     sentence = input()          #입력값
     find_type = -1              #-o가있는지 판단하기 위해 있음.
     while 1:
         find_type = sentence.find("-o")    #find로 -o가있는 위치를 찾음. 만약 없다면 find_type의 값이 바뀌지 않아 다시 입력해야함.
-        if sentence[find_type+3] == "A":
-            sorting_type=True              #sorting_type은 오름차순 내림차순을 결정하기 위해 사용.
+        if find_type != -1:
+            findcheck=True
+        x = 0     # A D 위치 찾을라고 씀.
+        while 1:
+            if x<= find_type:       # -o가 있는곳까진 넘어감
+                x=x+1
+                continue
+            if sentence[x] == "A":   # -o이후 처음 A 혹인 D가 나오면 정렬 타입 정하고 반복문탈출.
+                sorting_type = True
+                findcheck=False
+                break
+            elif sentence[x] =="D":
+                sorting_type=False
+                findcheck=False
+                break
+            x=x+1
+        if findcheck==False:
             break
-        elif sentence[find_type+3]=="D":
-            sorting_type=False
-            break
-        else:
-            print("Wrong sorting type insert \'A\'or\'D\' ")        #A 나 D가 오지않으면 오름,내림결정못함 다시.
-            find_type=-1                                            #-o는 있으나 A D가없을수있으니 find_type 다시 초기화.
-            break
+        elif findcheck==True:
+            print("Wrong sorting type insert \'A\'or\'D\' ") 
     if find_type==-1:
+        print("When insert type. fisrt \'-o\' ") 
         continue
         
     lines = sentence.find("-i")                                     #-i가 나오는 위치를 찾아 그전에 나오는 숫자들은 배열에 넣지 않게하기위함.
@@ -90,7 +101,8 @@ while 1:
         elif line[0] == "-":                            # -가 나오면 minercheck 켜짐.
             minercheck = True
 
-    list1.append(chiper_cnt)
+    if list1[len(list1)-1] != chiper_cnt:
+        list1.append(chiper_cnt)
     min=0
     max=len(list1)
     break
