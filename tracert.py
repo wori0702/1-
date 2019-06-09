@@ -98,6 +98,8 @@ def icmproute(address,hop_cnt,recv_time):
     ip_header = IP(ip)
     icmp_header = ICMP()
     switch = False
+    Name=""
+    addr=""
     for i in range (1,hop_cnt+1):
 
         chk = make_checksum(icmp_header.make_ICMP_header())
