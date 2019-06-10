@@ -124,7 +124,7 @@ def icmproute(address,hop_cnt,recv_time,size):
             end = timeit.default_timer()
             
             if recv_data ==  None:
-                print("*",end = " ")
+                print("*      ",end = " ")
 
             else:
 
