@@ -49,7 +49,7 @@ class ICMP:
 class UDP:
     
     def __init__(self,port, data='Hi'):
-        self.src_port = 6000
+        self.src_port = 0
         self.dst_port = port
         self.length =8 + len(data)
         self.checksum=0
