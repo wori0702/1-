@@ -193,7 +193,6 @@ def udproute(address,hop_cnt,recv_time,use_port,size):
                 middle_ip =struct.unpack("!4B",recv_data[12:16])
                 Name = socket.gethostbyaddr('%s.%s.%s.%s'%middle_ip[0:4])[0] 
                 addr = '%s.%s.%s.%s' %middle_ip[0:4]
-                print(recv_type)
 
                 if recv_type[0] == 11 and recv_type[1] == 0:
                     packet = struct.unpack("!BBHHHBBH4B",recv_data[28:44])
@@ -209,6 +208,9 @@ def udproute(address,hop_cnt,recv_time,use_port,size):
                     
                     recv_id = struct.unpack("!H",recv_data[10:12])  #IP의 id
                     recv_port = struct.unpack("!H",recv_data[50:52]) #UDP의 port
+
+                    print(recv_id)
+                    print(recv_port)
                     
                     if ip_header.fid == recv_id[0] and udp_header.dst_port == recv_port[0] :
                         if three ==2:
