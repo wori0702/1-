@@ -8,13 +8,13 @@ from functools import reduce
 class IP:
     
 
-    def __init__(self,dst='127.0.0.1',protocol = 1):
+    def __init__(self,size,dst='127.0.0.1',protocol = 1):
         self.src = socket.inet_aton('0.0.0.0')
         self.dst = socket.inet_aton(dst)
         self.ip_ver = 4
         self.ip_hl = 5
         self.tos =0
-        self.tol=0
+        self.tol=size
         self.fid=25252
         self.f_rsv=0
         self.f_dtf=0
@@ -24,10 +24,9 @@ class IP:
         self.checksum=0
         self.proto = protocol
 
-    def make_IP_header(self,data="Hi"):
+    def make_IP_header(self):
         self.V_HL = self.ip_ver<<4 | self.ip_hl
         self.mrf_offset = self.f_mrf<<13 | self.f_offset
-        self.tol = 28 + len(data)
         pack = struct.pack('!2B3H2BH',self.V_HL,self.tos,self.tol,self.fid,self.mrf_offset,self.ttl,self.proto,self.checksum)
         return pack + self.src + self.dst
 
@@ -91,12 +90,13 @@ def get_msg(time):
         except :
             return None
 
-def icmproute(address,hop_cnt,recv_time):
+def icmproute(address,hop_cnt,recv_time,size):
     print("USING PROTOCOL : ICMP")
     
+    data = 'F'*(size - 28)
     ip = socket.gethostbyname(address)
-    ip_header = IP(ip)
-    icmp_header = ICMP()
+    ip_header = IP(size,ip)
+    icmp_header = ICMP(data)
     switch = False
     Name=""
     addr=""
@@ -120,11 +120,12 @@ def icmproute(address,hop_cnt,recv_time):
             if recv_data ==  None:
                 print("*",end = " ")
             else:
+
+
                 recv_type =struct.unpack("!BB",recv_data[20:22])
                 middle_ip =struct.unpack("!4B",recv_data[12:16])
                 Name = socket.gethostbyaddr('%s.%s.%s.%s'%middle_ip[0:4])[0]                #11왔을때 ip패킷 비교하는거 짜야함.
                 addr = '%s.%s.%s.%s' %middle_ip[0:4]
-
                 if recv_type[0] ==0 and recv_type[1] == 0 :
                     print('%.2f ms' %((end-start)*1000), end = "  ")
 
@@ -136,10 +137,9 @@ def icmproute(address,hop_cnt,recv_time):
                             break
 
                 elif recv_type[0] == 11 and recv_type[1] ==0:                                   #timeeceeded 부분
-
                     packet = struct.unpack("!BBHHHBBH4B",recv_data[28:44])
                     
-                    if  (packet[0]==ip_header.V_HL and packet[1] == ip_header.tos and packet[2] == ip_header.tol
+                    if  (packet[0]==ip_header.V_HL and packet[1] == ip_header.tos and packet[2] == ip_header.tol                #여기 지금 문제있디
                     and packet[3]==ip_header.fid and packet[4] == ip_header.mrf_offset 
                     and packet[5] == ip_header.ttl and packet[6] == ip_header.proto and ip_header.dst == recv_data[44:48]):
                         print('%.2f ms' %((end-start)*1000), end = "  ")
@@ -157,11 +157,12 @@ def icmproute(address,hop_cnt,recv_time):
         print("\nroting failed")
 
 
-def udproute(address,hop_cnt,recv_time,use_port):
+def udproute(address,hop_cnt,recv_time,use_port,size):
     print("USING PROTOCOL : UDP")
+    data = 'F'*(size - 28)
     ip = socket.gethostbyname(address)
-    ip_header = IP(ip,17)
-    udp_header = UDP(use_port)
+    ip_header = IP(size,ip,17)
+    udp_header = UDP(use_port,data)
     switch = False
 
     for i in range(1,hop_cnt+1):
@@ -186,7 +187,7 @@ def udproute(address,hop_cnt,recv_time,use_port):
                 Name = socket.gethostbyaddr('%s.%s.%s.%s'%middle_ip[0:4])[0] 
                 addr = '%s.%s.%s.%s' %middle_ip[0:4]
 
-                if recv_type[0] == 11 and recv_type[1] == 0:    
+                if recv_type[0] == 11 and recv_type[1] == 0:
                     packet = struct.unpack("!BBHHHBBH4B",recv_data[28:44])
                     
                     if  (packet[0]==ip_header.V_HL and packet[1] == ip_header.tos and packet[2] == ip_header.tol
@@ -227,6 +228,7 @@ if __name__ == "__main__":
     parser.add_argument('-d', type=str, required=True, metavar='Destiny ip|Domain', help='Destiny ip|Domain')
     parser.add_argument('-c', type=int, required=False, default=30, metavar='max hops')
     parser.add_argument('-t', type=int, required=False,default= 1.0, metavar='recv_time')
+    parser.add_argument('-s', type=int, required=False,default=30,metavar='size')
     group.add_argument('-I', '--icmp', action='store_true')
     group.add_argument('-U', '--udp', action='store_false')
     parser.add_argument('-p',type=int, required=False, default=33434,metavar='udp_port')
@@ -235,7 +237,7 @@ if __name__ == "__main__":
 
     print("traceroute to" + args.d + "(" +socket.gethostbyname(args.d) + ")," + str(args.c) + "hops max")
     if args.icmp:
-        icmp = icmproute(args.d,args.c,args.t)
+        icmp = icmproute(args.d,args.c,args.t,args.s)
     else:
-        udp = udproute(args.d,args.c,args.t,args.p)
+        udp = udproute(args.d,args.c,args.t,args.p,args.s)
     
