@@ -207,7 +207,7 @@ def udproute(address,hop_cnt,recv_time,use_port,size):
                     print('%.2f ms' %((end-start)*1000), end = "  ")
                     
                     print(recv_data)
-                    recv_id = struct.unpack("!H",recv_data[39:43])  #IP의 id
+                    recv_id = struct.unpack("!H",recv_data[39:41])  #IP의 id
                     recv_port = struct.unpack("!H",recv_data[50:52]) #UDP의 port
 
                     print(recv_id)
