@@ -78,6 +78,7 @@ def send_msg(MSG,ip):
     with socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_RAW) as trace_sock:
 
         trace_sock.sendto(MSG,(ip,8888))
+        trace_sock.close()
 
 def get_msg(time):
     
@@ -86,12 +87,15 @@ def get_msg(time):
         back_sock.settimeout(time)
         try:
             data, _ = back_sock.recvfrom(65535)
-#             middle_ip =struct.unpack("!4B",data[12:16])
-#             print(middle_ip)
-#             Name = socket.gethostbyaddr('%s.%s.%s.%s'%middle_ip[0:4])[0] 
-#             print(Name)
+            print(data)
+            middle_ip =struct.unpack("!4B",data[12:16])
+            print(middle_ip)
+            Name = socket.gethostbyaddr('%s.%s.%s.%s'%middle_ip[0:4])[0] 
+            print(Name)
+            back_sock.close()
             return data
         except :
+            back_sock.close()
             return None
 
 def icmproute(address,hop_cnt,recv_time,size):
