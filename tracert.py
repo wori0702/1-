@@ -206,14 +206,9 @@ def udproute(address,hop_cnt,recv_time,use_port,size):
                     
                     print('%.2f ms' %((end-start)*1000), end = "  ")
                     
-                    print(recv_data)
-                    recv_id = struct.unpack("!H",recv_data[39:41])  #IP의 id
+                    recv_id = struct.unpack("!H",recv_data[32:34])  #IP의 id
                     recv_port = struct.unpack("!H",recv_data[50:52]) #UDP의 port
 
-                    print(recv_id)
-                    print(ip_header.fid)
-                    print(recv_port)
-                    print(udp_header.dst_port)
                     
                     if ip_header.fid == recv_id[0] and udp_header.dst_port == recv_port[0] :
                         if three ==2:
