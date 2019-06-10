@@ -86,10 +86,10 @@ def get_msg(time):
         back_sock.settimeout(time)
         try:
             data, _ = back_sock.recvfrom(65535)
-            middle_ip =struct.unpack("!4B",data[12:16])
-            print(middle_ip)
-            Name = socket.gethostbyaddr('%s.%s.%s.%s'%middle_ip[0:4])[0] 
-            print(Name)
+#             middle_ip =struct.unpack("!4B",data[12:16])
+#             print(middle_ip)
+#             Name = socket.gethostbyaddr('%s.%s.%s.%s'%middle_ip[0:4])[0] 
+#             print(Name)
             return data
         except :
             return None
