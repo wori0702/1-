@@ -208,6 +208,7 @@ def udproute(address,hop_cnt,recv_time,use_port,size):
                     if ip_header.fid == recv_id[0] and udp_header.dst_port == recv_port[0] :
                         if three ==2:
                             switch=True
+                            break
                     
 
         if Name != None and addr != None:
