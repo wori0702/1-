@@ -87,11 +87,8 @@ def get_msg(time):
         back_sock.settimeout(time)
         try:
             data, _ = back_sock.recvfrom(65535)
-            print(data)
             middle_ip =struct.unpack("!4B",data[12:16])
-            print(middle_ip)
             Name = socket.gethostbyaddr('%s.%s.%s.%s'%middle_ip[0:4])[0] 
-            print(Name)
             back_sock.close()
             return data
         except :
@@ -196,7 +193,7 @@ def udproute(address,hop_cnt,recv_time,use_port,size):
                 middle_ip =struct.unpack("!4B",recv_data[12:16])
                 Name = socket.gethostbyaddr('%s.%s.%s.%s'%middle_ip[0:4])[0] 
                 addr = '%s.%s.%s.%s' %middle_ip[0:4]
-                
+                print(recv_type)
 
                 if recv_type[0] == 11 and recv_type[1] == 0:
                     packet = struct.unpack("!BBHHHBBH4B",recv_data[28:44])
@@ -206,7 +203,7 @@ def udproute(address,hop_cnt,recv_time,use_port,size):
                     and packet[5] == ip_header.ttl and packet[6] == ip_header.proto and ip_header.dst == recv_data[44:48]):
                         print('%.2f ms' %((end-start)*1000), end = "  ")
 
-
+                
                 elif recv_type[0] == 3 and recv_type[1] ==3:
                     print('%.2f ms' %((end-start)*1000), end = "  ")
                     
