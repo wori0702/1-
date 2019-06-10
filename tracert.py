@@ -86,6 +86,7 @@ def get_msg(time):
         back_sock.settimeout(time)
         try:
             data, _ = back_sock.recvfrom(65535)
+            print(data)
             middle_ip =struct.unpack("!4B",data[12:16])
             Name = socket.gethostbyaddr('%s.%s.%s.%s'%middle_ip[0:4])[0] 
             back_sock.close()
@@ -105,6 +106,7 @@ def icmproute(address,hop_cnt,recv_time,size):
     switch = False
     Name=None
     addr=None
+
     for i in range (1,hop_cnt+1):
 
         chk = make_checksum(icmp_header.make_ICMP_header())
@@ -124,6 +126,7 @@ def icmproute(address,hop_cnt,recv_time,size):
             
             if recv_data ==  None:
                 print("*",end = " ")
+
             else:
 
 
