@@ -216,6 +216,7 @@ def udproute(address,hop_cnt,recv_time,use_port,size):
             addr=None
 
         ip_header.ttl +=1
+        udp_header.dst_port+=1
     
     if switch == True:
         print("\nrouting complete")
