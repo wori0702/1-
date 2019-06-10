@@ -83,7 +83,6 @@ def send_msg(MSG,ip):
 def get_msg(time):
     
     with socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_ICMP) as back_sock:
-    
         back_sock.settimeout(time)
         try:
             data, _ = back_sock.recvfrom(65535)
@@ -210,7 +209,9 @@ def udproute(address,hop_cnt,recv_time,use_port,size):
                     recv_port = struct.unpack("!H",recv_data[50:52]) #UDP의 port
 
                     print(recv_id)
+                    print(ip_header.fid)
                     print(recv_port)
+                    print(udp_header.dst_port)
                     
                     if ip_header.fid == recv_id[0] and udp_header.dst_port == recv_port[0] :
                         if three ==2:
