@@ -95,6 +95,7 @@ def icmproute(address,hop_cnt,recv_time,size):
     
     data = 'F'*(size - 28)
     ip = socket.gethostbyname(address)
+    print("traceroute to" + address + "(" +ip + "), " + str(hop_cnt) + "hops max")
     ip_header = IP(size,ip)
     icmp_header = ICMP(data)
     switch = False
@@ -124,11 +125,9 @@ def icmproute(address,hop_cnt,recv_time,size):
 
                 recv_type =struct.unpack("!BB",recv_data[20:22])
                 middle_ip =struct.unpack("!4B",recv_data[12:16])
-                try:
-                    Name = socket.gethostbyaddr('%s.%s.%s.%s'%middle_ip[0:4])[0] 
-                    addr = '%s.%s.%s.%s' %middle_ip[0:4]
-                except(socket.herror):
-                    None
+                print(middle_ip)
+                Name = socket.gethostbyaddr('%s.%s.%s.%s'%middle_ip[0:4])[0]                #11왔을때 ip패킷 비교하는거 짜야함.
+                addr = '%s.%s.%s.%s' %middle_ip[0:4]
                 if recv_type[0] ==0 and recv_type[1] == 0 :
                     print('%.2f ms' %((end-start)*1000), end = "  ")
 
@@ -164,6 +163,7 @@ def udproute(address,hop_cnt,recv_time,use_port,size):
     print("USING PROTOCOL : UDP")
     data = 'F'*(size - 28)
     ip = socket.gethostbyname(address)
+    print("traceroute to" + address + "(" +ip + ")," + str(hop_cnt) + "hops max")
     ip_header = IP(size,ip,17)
     udp_header = UDP(use_port,data)
     switch = False
@@ -187,11 +187,8 @@ def udproute(address,hop_cnt,recv_time,use_port,size):
             else:
                 recv_type =struct.unpack("!BB",recv_data[20:22])
                 middle_ip =struct.unpack("!4B",recv_data[12:16])
-                try:
-                    Name = socket.gethostbyaddr('%s.%s.%s.%s'%middle_ip[0:4])[0] 
-                    addr = '%s.%s.%s.%s' %middle_ip[0:4]
-                except(socket.herror):
-                    None
+                Name = socket.gethostbyaddr('%s.%s.%s.%s'%middle_ip[0:4])[0] 
+                addr = '%s.%s.%s.%s' %middle_ip[0:4]
 
                 if recv_type[0] == 11 and recv_type[1] == 0:
                     packet = struct.unpack("!BBHHHBBH4B",recv_data[28:44])
@@ -241,7 +238,6 @@ if __name__ == "__main__":
     
     args = parser.parse_args()
 
-    print("traceroute to" + args.d + "(" +socket.gethostbyname(args.d) + ")," + str(args.c) + "hops max")
     if args.icmp:
         icmp = icmproute(args.d,args.c,args.t,args.s)
     else:
