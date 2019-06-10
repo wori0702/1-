@@ -124,8 +124,11 @@ def icmproute(address,hop_cnt,recv_time,size):
 
                 recv_type =struct.unpack("!BB",recv_data[20:22])
                 middle_ip =struct.unpack("!4B",recv_data[12:16])
-                Name = socket.gethostbyaddr('%s.%s.%s.%s'%middle_ip[0:4])[0]                #11왔을때 ip패킷 비교하는거 짜야함.
-                addr = '%s.%s.%s.%s' %middle_ip[0:4]
+                try:
+                    Name = socket.gethostbyaddr('%s.%s.%s.%s'%middle_ip[0:4])[0] 
+                    addr = '%s.%s.%s.%s' %middle_ip[0:4]
+                except(socket.herror):
+                    None
                 if recv_type[0] ==0 and recv_type[1] == 0 :
                     print('%.2f ms' %((end-start)*1000), end = "  ")
 
@@ -188,7 +191,7 @@ def udproute(address,hop_cnt,recv_time,use_port,size):
                     Name = socket.gethostbyaddr('%s.%s.%s.%s'%middle_ip[0:4])[0] 
                     addr = '%s.%s.%s.%s' %middle_ip[0:4]
                 except(socket.herror):
-                    print("??")
+                    None
 
                 if recv_type[0] == 11 and recv_type[1] == 0:
                     packet = struct.unpack("!BBHHHBBH4B",recv_data[28:44])
