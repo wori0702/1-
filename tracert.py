@@ -49,7 +49,7 @@ class ICMP:
 class UDP:
     
     def __init__(self,port, data='Hi'):
-        self.src_port = 0
+        self.src_port = 50000
         self.dst_port = port
         self.length =8 + len(data)
         self.checksum=0
@@ -99,7 +99,7 @@ def icmproute(address,hop_cnt,recv_time,size):
     
     data = 'F'*(size - 28)
     ip = socket.gethostbyname(address)
-    print("traceroute to " + address + " (" +ip + "), " + str(hop_cnt) + "hops max")
+    print("traceroute to " + address + "(" +ip + "), " + str(hop_cnt) + "hops max "+ str(size) + "byte packets")
     ip_header = IP(size,ip)
     icmp_header = ICMP(data)
     switch = False
@@ -124,7 +124,7 @@ def icmproute(address,hop_cnt,recv_time,size):
             end = timeit.default_timer()
             
             if recv_data ==  None:
-                print("*      ",end = " ")
+                print("*",end = " ")
 
             else:
 
@@ -168,7 +168,7 @@ def udproute(address,hop_cnt,recv_time,use_port,size):
     print("USING PROTOCOL : UDP")
     data = 'F'*(size - 28)
     ip = socket.gethostbyname(address)
-    print("traceroute to " + address + " (" +ip + "), " + str(hop_cnt) + "hops max")
+    print("traceroute to " + address + "(" +ip + ")," + str(hop_cnt) + "hops max " + str(size) + "byte packets")
     ip_header = IP(size,ip,17)
     udp_header = UDP(use_port,data)
     switch = False
@@ -237,10 +237,10 @@ def udproute(address,hop_cnt,recv_time,use_port,size):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Do the tracert")
     group = parser.add_mutually_exclusive_group()
-    parser.add_argument('-d', type=str, required=True, metavar='Destiny ip|Domain', help='Destiny ip|Domain')
+    parser.add_argument('d', type=str,metavar='Destiny ip|Domain')
+    parser.add_argument('s', type=int,default=30,metavar='size')
     parser.add_argument('-c', type=int, required=False, default=30, metavar='max hops')
     parser.add_argument('-t', type=int, required=False,default= 1.0, metavar='recv_time')
-    parser.add_argument('-s', type=int, required=False,default=30,metavar='size')
     group.add_argument('-I', '--icmp', action='store_true')
     group.add_argument('-U', '--udp', action='store_false')
     parser.add_argument('-p',type=int, required=False, default=33434,metavar='udp_port')
