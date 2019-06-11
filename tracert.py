@@ -99,7 +99,7 @@ def icmproute(address,hop_cnt,recv_time,size):
     
     data = 'F'*(size - 28)
     ip = socket.gethostbyname(address)
-    print("traceroute to " + address + "(" +ip + "), " + str(hop_cnt) + "hops max "+ str(size) + "byte packets")
+    print("traceroute to " + address + "(" +ip + "), " + str(hop_cnt) + "hops max, "+ str(size) + "byte packets")
     ip_header = IP(size,ip)
     icmp_header = ICMP(data)
     switch = False
@@ -168,7 +168,7 @@ def udproute(address,hop_cnt,recv_time,use_port,size):
     print("USING PROTOCOL : UDP")
     data = 'F'*(size - 28)
     ip = socket.gethostbyname(address)
-    print("traceroute to " + address + "(" +ip + ")," + str(hop_cnt) + "hops max " + str(size) + "byte packets")
+    print("traceroute to " + address + "(" +ip + ")," + str(hop_cnt) + "hops max, " + str(size) + "byte packets")
     ip_header = IP(size,ip,17)
     udp_header = UDP(use_port,data)
     switch = False
